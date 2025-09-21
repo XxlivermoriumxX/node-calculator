@@ -2,7 +2,7 @@ var rs = require('readline-sync');
 
 var getOperation = () => {
   let operation = rs.question('What operation would you like to perform? ');
-  if (operation != '/' || operation != '*' || operation != '+' || operation != '-' ){
+  while (operation !== '/' && operation !== '*' && operation !== '+' && operation !== '-'){
     console.log('That is not a valid operation, please try again');
     getOperation();
   }
@@ -15,38 +15,33 @@ var getValue = (placement) => {
     console.log('This is not a number, please try again');
     getValue(placement);
   }
+  return value;
 }
 
 var calculate = (num1, num2, operand) => {
   if(operation === '+'){
-    answer = firstNum + secondNum;
+    return firstNum + secondNum;
   } else if (operation === '-'){
-    answer = firstNum - secondNum;
+    return firstNum - secondNum;
   } else if (operation === '/'){
     //checking for 0
     if(secondNum === 0){
       console.log('Cannot divide by 0');
     } else {
-      answer = firstNum / secondNum;
-      var answerWhole = Math.trunc(answer);
-      var answerMod = firstNum % secondNum;
+      return firstNum / secondNum;
     }
   } else if (operation === '*'){
-    answer = firstNum * secondNum;
+    return firstNum * secondNum;
   }
 } 
 
-var operation = getOperation();
+let operation = getOperation();
 
-var firstNum = getValue("first");
+let firstNum = getValue("first");
 
-var secondNum = getValue("second");
+let secondNum = getValue("second");
 
 var answer = calculate(firstNum, secondNum, operation)
 
-if(operation === '/'){
-  console.log(firstNum + ' ' + operation + ' ' + secondNum + ' = ' + answer + ' OR ' + answerWhole + ' with ' + answerMod + 'remaining')
-} else{
-  console.log(firstNum + ' ' + operation + ' ' + secondNum + ' = ' + answer );
-}
+console.log(firstNum + ' ' + operation + ' ' + secondNum + ' = ' + answer );
 
