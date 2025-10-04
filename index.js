@@ -1,47 +1,49 @@
-var rs = require('readline-sync');
+const rs = require("readline-sync");
 
-var getOperation = () => {
-  let operation = rs.question('What operation would you like to perform? ');
-  while (operation !== '/' && operation !== '*' && operation !== '+' && operation !== '-'){
-    console.log('That is not a valid operation, please try again');
-    getOperation();
-  }
+const arrOperationsObject = {
+  "+": (a, b) => a + b,
+  "-": (a, b) => a - b,
+  "*": (a, b) => a * b,
+  "/": (a, b) => a / b,
+};
+
+const getOperation = (validOperations) => {
+  let operation = rs.question("What operation would you like to perform? ", {
+    limit: validOperations,
+    limitMessage: "That is not a valid operation, please try again",
+  });
+
   return operation;
-}
+};
 
-var getValue = (placement) => {
-  let value = rs.questionInt('Please enter the ' + placement + ' number: ');
-  if (value === NaN){
-    console.log('This is not a number, please try again');
-    getValue(placement);
+const getNumber = (placement, isDivision = false) => {
+  const input = rs.questionInt("Please enter the " + placement + " number: ", {
+    limitMessage: "That is not a valid number",
+  });
+  if (isDivision && placement === "second" && input === 0) {
+    console.log("Cannot divide by zero! Choose a different second number");
+    return getNumber(placement, isDivision);
   }
-  return value;
-}
 
-var calculate = (num1, num2, operand) => {
-  if(operation === '+'){
-    return firstNum + secondNum;
-  } else if (operation === '-'){
-    return firstNum - secondNum;
-  } else if (operation === '/'){
-    //checking for 0
-    if(secondNum === 0){
-      console.log('Cannot divide by 0');
-    } else {
-      return firstNum / secondNum;
-    }
-  } else if (operation === '*'){
-    return firstNum * secondNum;
-  }
-} 
+  return input;
+};
 
-let operation = getOperation();
+const calculate = (num1, num2, operand, config) => {
+  return config[operand](num1, num2);
+};
 
-let firstNum = getValue("first");
+const runCalculator = (validOperationsObject) => {
+  const validOperations = Object.keys(validOperationsObject);
+  const operation = getOperation(validOperations);
+  const firstNum = getNumber("first");
+  const secondNum = getNumber("second", operation === "/");
+  const answer = calculate(
+    firstNum,
+    secondNum,
+    operation,
+    validOperationsObject
+  );
+  console.log(firstNum + " " + operation + " " + secondNum + " = " + answer);
+};
 
-let secondNum = getValue("second");
-
-var answer = calculate(firstNum, secondNum, operation)
-
-console.log(firstNum + ' ' + operation + ' ' + secondNum + ' = ' + answer );
-
+runCalculator(arrOperationsObject);
